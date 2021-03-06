@@ -1,8 +1,10 @@
 package web;
 
 import java.awt.AWTException;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,6 +18,7 @@ import javax.imageio.ImageIO;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -36,9 +39,19 @@ public class Web {
 		
 		boolean b = false;
 
-        System.setProperty("webdriver.chrome.driver", new File("driver/chromedriver.exe").getAbsolutePath());
+		try {
+			System.setProperty("webdriver.chrome.driver", new File("drivers/windows/89/chromedriver.exe").getAbsolutePath());
+	        driver = new ChromeDriver();
+		} catch (SessionNotCreatedException e) {
+			try {
+				System.setProperty("webdriver.chrome.driver", new File("drivers/windows/88/chromedriver.exe").getAbsolutePath());
+		        driver = new ChromeDriver();
+			}catch(SessionNotCreatedException e1) {
+				System.setProperty("webdriver.chrome.driver", new File("drivers/windows/87/chromedriver.exe").getAbsolutePath());
+		        driver = new ChromeDriver();
+			}
+		}
         
-        driver = new ChromeDriver();
 		
 		driver.get("https://www.google.com/maps");
 		
@@ -213,8 +226,9 @@ public class Web {
 	            	fileName = dir+"/bike"+i+"." + format;
 	            else
 	            	fileName = dir+"/walk"+i+"." + format;
-	             
-	            Rectangle captureRect = new Rectangle(584, 159, 786, 595);
+	            
+	            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	            Rectangle captureRect = new Rectangle(screenSize.width / 2-240, screenSize.height / 2-230, screenSize.width / 2, screenSize.height / 2);
 	            BufferedImage screenFullImage = robot.createScreenCapture(captureRect); 
 	            ImageIO.write(screenFullImage, format, new File(fileName));
 	            
@@ -267,6 +281,7 @@ public class Web {
 		BufferedReader br;
 		String elements[];
 		String line;
+		boolean oneShot = true;
 		boolean equal;
 		try {
 			br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/src/records/cases.txt"));
@@ -280,8 +295,9 @@ public class Web {
 						elements[5].equals(details[5]) && elements[6].equals(details[6]) &&
 						elements[7].equals(details[7]);
 				
-				if(!equal) {
+				if(!equal && oneShot) {
 					txt+=line;
+					oneShot = false;
 				}
 			}
 			br.close();
