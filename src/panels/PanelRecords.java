@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -201,16 +202,12 @@ public class PanelRecords extends JPanel {
 					pathImage = "/images/resultCar.PNG";
 					mainImage.setIcon(new ImageIcon(PanelRecords.class.getResource(pathImage)));
 					web.delete(index);
-					if(web.getRecordSize() == 0) {
-						setVisible(false);
-						contentPane.remove(panel);
-						contentPane.add(new PanelEntrance(contentPane, frame));
-					}else {
-						web.setDetails(index);
-						turnOn(true);
-						refresh(web);
+					try {
+						Runtime.getRuntime().exec("java -jar MapsClone.jar");
+					} catch (IOException e1) {
+						e1.printStackTrace();
 					}
-					
+					System.exit(0);
 				}
 			});
 			btnYes.setFocusPainted(false);
@@ -225,6 +222,7 @@ public class PanelRecords extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					pathImage = "/images/resultCar.PNG";
 					mainImage.setIcon(new ImageIcon(PanelRecords.class.getResource(pathImage)));
+					web.setDetails(index);
 					turnOn(true);
 					refresh(web);
 				}
@@ -294,4 +292,5 @@ public class PanelRecords extends JPanel {
 		btnYes.setVisible(!on);
 		btnNo.setVisible(!on);
 	}
+	
 }

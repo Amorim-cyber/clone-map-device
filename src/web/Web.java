@@ -281,7 +281,7 @@ public class Web {
 		BufferedReader br;
 		String elements[];
 		String line;
-		boolean oneShot = true;
+		boolean repeated = false;
 		boolean equal;
 		try {
 			br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/src/records/cases.txt"));
@@ -295,10 +295,12 @@ public class Web {
 						elements[5].equals(details[5]) && elements[6].equals(details[6]) &&
 						elements[7].equals(details[7]);
 				
-				if(!equal && oneShot) {
-					txt+=line;
-					oneShot = false;
-				}
+				if(!equal)
+					txt+=line + "\n";
+				else if(repeated)
+					txt+=line + "\n";
+				else 
+					repeated = true;
 			}
 			br.close();
 		} catch (FileNotFoundException e1) {
@@ -336,17 +338,18 @@ public class Web {
 		file = new File(dirWalk+"/walk"+i+".png");
 		file.delete();
 		
+		for(int j=i;j<cont()-1;j++) {
+			file = new File(dirCar+"/Car"+(j+1)+".png");
+			file.renameTo(new File(dirCar+"/car"+j+".png"));
+			file = new File(dirBike+"/bike"+(j+1)+".png");
+			file.renameTo(new File(dirBike+"/bike"+j+".png"));
+			file = new File(dirWalk+"/walk"+(j+1)+".png");
+			file.renameTo(new File(dirWalk+"/walk"+j+".png"));
+		}
+		
 		read();
 		write(false);
 		
-		for(int j=i;j<cont();j++) {
-			file = new File(dirCar+"/Car"+(i+1)+".png");
-			file.renameTo(new File(dirCar+"/car"+i+".png"));
-			file = new File(dirBike+"/bike"+(i+1)+".png");
-			file.renameTo(new File(dirBike+"/bike"+i+".png"));
-			file = new File(dirWalk+"/walk"+(i+1)+".png");
-			file.renameTo(new File(dirWalk+"/walk"+i+".png"));
-		}
 	}
 	
 	public void setDetails(int i) {
